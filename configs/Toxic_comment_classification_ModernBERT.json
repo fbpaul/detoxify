@@ -1,8 +1,8 @@
 {
     "name": "Jigsaw_ModernBERT",
     "n_gpu": 1,
-    "batch_size": 10,
-    "accumulate_grad_batches": 3,
+    "batch_size": 5,
+    "accumulate_grad_batches": 2,
     "loss": "binary_cross_entropy",
     "arch": {
         "type": "ModernBERT",
@@ -17,7 +17,7 @@
         "type": "JigsawDataOriginal",
         "args": {
             "train_csv_file": "jigsaw_data/jigsaw-toxic-comment-classification-challenge/train.csv",
-            "test_csv_file": "jigsaw_data/jigsaw-toxic-comment-classification-challenge/val.csv",
+            "test_csv_file": "jigsaw_data/jigsaw-toxic-comment-classification-challenge/test.csv",
             "add_test_labels": false,
             "classes": [
                 "toxicity",
