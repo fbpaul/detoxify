@@ -1,8 +1,8 @@
 {
     "name": "Jigsaw_ModernBERT",
     "n_gpu": 1,
-    "batch_size": 5,
-    "accumulate_grad_batches": 2,
+    "batch_size": 10,
+    "accumulate_grad_batches": 3,
     "loss": "binary_cross_entropy",
     "arch": {
         "type": "ModernBERT",

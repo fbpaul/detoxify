@@ -88,10 +88,14 @@ config_path = 'configs/Toxic_comment_classification_ModernBERT.json'  # 請替�
 config = json.load(open(config_path))
 
 # 測試集路徑
-test_csv_path = 'jigsaw_data/jigsaw-toxic-comment-classification-challenge/test.csv'
+# test_csv_path = 'jigsaw_data/jigsaw-toxic-comment-classification-challenge/test.csv'
+# test_csv_path = 'jigsaw_data/jigsaw-toxic-comment-classification-challenge-old/test.csv'
+test_csv_path = 'test_toxic_comment.csv'
+# test_csv_path = 'toxic_data_chatgpt.csv'
 
 # 檢查點路徑
 checkpoint_path = 'saved/Jigsaw_ModernBERT/lightning_logs/version_1/checkpoints/epoch=99-step=41600.ckpt'
+# checkpoint_path = 'saved/Jigsaw_ModernBERT/lightning_logs/version_2/checkpoints/epoch=4-step=21560.ckpt'
 
 # 設備
 device = "cuda:1" if torch.cuda.is_available() else "cpu"
@@ -102,9 +106,10 @@ results = test_classifier(config, test_csv_path, checkpoint_path, device)
 # 保存結果
 # test_set_name = test_csv_path.split("/")[-2]
 # file_name = checkpoint_path.split('/')[-1][:-5] + f"results_{test_set_name}.json"
-# with open(file_name, "w") as f:
-#     json.dump(results, f)
-# print(f"Saving results to {file_name}")
+file_name = 'reslts_temp.json'
+with open(file_name, "w") as f:
+    json.dump(results, f)
+print(f"Saving results to {file_name}")
 
 # 設定threshold
 threshold = 0.5
@@ -112,6 +117,66 @@ threshold = 0.5
 predicted_labels = np.array(results['scores']) > threshold
 # 將targets轉換為numpy array
 true_labels = np.array(results['targets'])
+# print(predicted_labels)
+# print(true_labels)
+# 總樣本數
+print(f"Total samples: {len(true_labels)}")
 # 計算指標
-report = classification_report(true_labels, predicted_labels, target_names=[f'Class {i}' for i in range(6)])
+all_report = classification_report(true_labels, predicted_labels, target_names=[f'Class {i}' for i in range(6)])
+print(all_report)
+
+true_toxic = true_labels[:, 0]
+predicted_toxic = predicted_labels[:, 0].astype(int)
+report = classification_report(true_toxic, predicted_toxic)
 print(report)
+
+'''
+- Jigsaw Dataset:
+
+               precision    recall  f1-score   support
+
+     Class 0       0.90      0.95      0.92        93
+     Class 1       1.00      0.92      0.96        12
+     Class 2       0.92      0.90      0.91        50
+     Class 3       0.67      1.00      0.80         4
+     Class 4       0.90      1.00      0.95        45
+     Class 5       1.00      0.88      0.93         8
+
+   micro avg       0.90      0.94      0.92       212
+   macro avg       0.90      0.94      0.91       212
+weighted avg       0.91      0.94      0.92       212
+ samples avg       0.08      0.09      0.08       212
+
+              precision    recall  f1-score   support
+
+           0       0.99      0.99      0.99       980
+           1       0.90      0.95      0.92        93
+
+    accuracy                           0.99      1073
+   macro avg       0.95      0.97      0.96      1073
+weighted avg       0.99      0.99      0.99      1073
+
+- Self Generated Dataset:
+              precision    recall  f1-score   support
+
+     Class 0       0.91      0.31      0.46        68
+     Class 1       0.00      0.00      0.00        17
+     Class 2       0.00      0.00      0.00        10
+     Class 3       0.00      0.00      0.00        17
+     Class 4       0.00      0.00      0.00         5
+     Class 5       0.00      0.00      0.00        14
+
+   micro avg       0.64      0.16      0.26       131
+   macro avg       0.15      0.05      0.08       131
+weighted avg       0.47      0.16      0.24       131
+ samples avg       0.08      0.06      0.06       131
+
+              precision    recall  f1-score   support
+
+           0       0.75      0.99      0.85       144
+           1       0.91      0.31      0.46        68
+
+    accuracy                           0.77       212
+   macro avg       0.83      0.65      0.66       212
+weighted avg       0.80      0.77      0.73       212
+'''

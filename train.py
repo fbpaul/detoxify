@@ -161,7 +161,7 @@ def cli_main():
     parser.add_argument(
         "-d",
         "--device",
-        default=None,
+        default="0",
         type=str,
         help="comma-separated indices of GPUs to enable (default: None)",
     )
@@ -171,7 +171,7 @@ def cli_main():
         type=int,
         help="number of workers used in the data loader (default: 10)",
     )
-    parser.add_argument("-e", "--n_epochs", default=10, type=int, help="if given, override the num")
+    parser.add_argument("-e", "--n_epochs", default=50, type=int, help="if given, override the num")
 
     args = parser.parse_args()
     config = json.load(open(args.config))
@@ -214,7 +214,8 @@ def cli_main():
     )
 
     if args.device is None:
-        devices = "auto"
+        # devices = "auto"
+        devices = [0]
     else:
         devices = [int(d.strip()) for d in args.device.split(",")]
 
